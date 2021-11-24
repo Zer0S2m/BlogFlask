@@ -1,22 +1,26 @@
 {% extends "base.html" %}
 
 {% block title %}
-<title>Blog</title>
+	<title>Blog</title>
 {% endblock %}
 
 {% block content %}
-<h1>Blog</h1>
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-5">
-	{% for post in data.posts %}
+	<h1>Blog</h1>
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-5">
+		{% for post in data.posts %}
 		<div class="col">
 			<div class="card">
+				<img src="{{ url_for('static', filename = post.pathImg) }}" class="card-img-top" alt="Image post">
 				<div class="card-body">
 					<h5 class="card-title">{{ post.title }}</h5>
 					<p class="card-text">{{ post.text }}</p>
-					<a href="#" class="btn btn-primary">Go somewhere</a>
+					<a href="{{ url_for('postDetail', id = post.id) }}" class="btn btn-primary">Read</a>
+					<p class="card-text mt-2">
+						<small class="text-muted">{{ post.pubDate }}</small>
+					</p>
 				</div>
 			</div>
 		</div>
-	{% endfor %}
-</div>
+		{% endfor %}
+	</div>
 {% endblock %}
