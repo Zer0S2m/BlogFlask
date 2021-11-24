@@ -1,37 +1,29 @@
-from datetime import datetime
-
 from flask import Flask
 from flask import render_template
 from flask import url_for
 
-from flask_sqlalchemy import SQLAlchemy
+from models import db
+from models import Post
 
 
+def create_app():
+	app = Flask(__name__, static_folder = "static")
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app = Flask(__name__, static_folder = "static")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+	db.init_app(app)
 
-
-class Post(db.Model):
-	"""docstring for Posts"""
-
-	id = db.Column(db.Integer(), primary_key = True)
-	title = db.Column(db.String(100), nullable = False)
-	text = db.Column(db.Text(), nullable = False)
-	pathImg = db.Column(db.String(), nullable = True)
-	pubDate = db.Column(db.DateTime(), nullable = False, default = datetime.now().date())
+	return app
 
 
-	def __repr__(self):
-		return f"{self.title} - id: {self.id}"
+app = create_app()
 
 
 @app.route("/index")
 @app.route("/")
 def index():
 	posts = Post.query.all()
+	print(posts)
 
 	data = {
 		"posts": posts
