@@ -4,6 +4,7 @@ from flask import url_for
 
 from models import db
 from models import Post
+from models import Category
 
 
 def create_app():
@@ -46,6 +47,20 @@ def postDetail(id):
 	}
 
 	return render_template("postDetail.html", data = data)
+
+
+@app.route("/category/<slug>")
+def categoryDetail(slug):
+	category = Category.query.filter_by(slug = slug).first()
+	posts = Post.query.filter_by(category = category).all()
+
+	data = {
+		"slug": slug,
+		"title": category.title,
+		"posts": posts
+	}
+
+	return render_template("categoryDetail.html", data = data)
 
 
 if __name__ == '__main__':

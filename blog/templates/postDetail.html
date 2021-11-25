@@ -15,4 +15,7 @@
 	</nav>
 	<h1 class="mt-5">{{ data.post.title }}</h1>
 	{{ data.post.text }}
+	<div class="mt-4">
+		<a href="{{ url_for('categoryDetail', slug = data.post.category.slug) }}">{{ data.post.category.title }}</a>
+	</div>
 {% endblock %}

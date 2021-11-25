@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>Blog</title>
+	<title>Blog - Category {{ data.slug }}</title>
 {% endblock %}
 
 {% block content %}
-	<h1>Blog</h1>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ url_for('index') }}">Home</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ data.slug }}</li>
+		</ol>
+	</nav>
+	<h1>{{ data.title }}</h1>
 	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-5">
 		{% for post in data.posts %}
 		<div class="col">
