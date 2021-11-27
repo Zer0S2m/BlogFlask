@@ -38,6 +38,26 @@ def about():
 	return render_template("about.html")
 
 
+@app.route("/categories")
+def categories():
+	infoPosts = {
+
+	}
+
+	categories = Category.query.all()
+
+	for category in range(0, len(categories)):
+		postsCount = len(Post.query.filter_by(category = categories[category]).all())
+		infoPosts[categories[category]] = postsCount
+
+	data = {
+		"categories": categories,
+		"infoPosts": infoPosts,
+	}
+
+	return render_template("categories.html", data = data)
+
+
 @app.route("/post-<int:id>")
 def postDetail(id):
 	post = Post.query.filter_by(id = id).first()
