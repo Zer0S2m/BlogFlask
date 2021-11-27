@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import render_template
 from flask import url_for
+from flask import redirect
+from flask import request
 
 from models import db
 from models import Post
@@ -24,7 +26,6 @@ app = create_app()
 @app.route("/")
 def index():
 	posts = Post.query.all()
-	print(posts)
 
 	data = {
 		"posts": posts
@@ -40,9 +41,7 @@ def about():
 
 @app.route("/categories")
 def categories():
-	infoPosts = {
-
-	}
+	infoPosts = {}
 
 	categories = Category.query.all()
 
@@ -81,6 +80,35 @@ def categoryDetail(slug):
 	}
 
 	return render_template("categoryDetail.html", data = data)
+
+
+@app.route("/create", methods = ["POST", "GET"])
+def create():
+	if request.method == "POST":
+		title = request.form["title"]
+		text = request.form["text"]
+
+		category = request.form["category"]
+		category = Category.query.filter_by(slug = category).first()
+
+		post = Post(title = title, text = text, category = category)
+
+		try:
+			db.session.add(post)
+			db.session.commit()
+
+			return redirect("/")
+		except:
+			return "Error"
+
+	else:
+		categories = Category.query.all()
+
+		data = {
+			"categories": categories,
+		}
+
+		return render_template("create.html", data = data)
 
 
 if __name__ == '__main__':

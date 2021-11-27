@@ -10,7 +10,9 @@
 		{% for post in data.posts %}
 		<div class="col">
 			<div class="card">
-				<img src="{{ url_for('static', filename = post.path_img) }}" class="card-img-top" alt="Image post">
+				{% if post.path_img %}
+					<img src="{{ url_for('static', filename = post.path_img) }}" class="card-img-top" alt="Image post">
+				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title">{{ post.title }}</h5>
 					<p class="card-text">{{ post.text }}</p>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>Blog - Add post</title>
+{% endblock %}
+
+{% block content %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ url_for('index') }}">Home</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">Add post</li>
+		</ol>
+	</nav>
+	<h1>Add post</h1>
+	<div class="w-50">
+		<form class="mt-4" method="post">
+			<div class="mb-3">
+				<label for="exampleInputEmail1" class="form-label">Title</label>
+				<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="title" required>
+			</div>
+			<div class="mb-3">
+				<label for="exampleFormControlTextarea1" class="form-label">Decription</label>
+				<textarea class="form-control" id="exampleFormControlTextarea1" name="text" rows="3" required></textarea>
+			</div>
+			<div class="mb-3">
+				<label for="exampleFormControlSelect" class="form-label">Select category</label>
+				<select name="category" class="form-select" id="exampleFormControlSelect" aria-label="Default select example" required>
+					{% for category in data.categories %}
+						<option value="{{ category.slug }}">{{ category.title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% endblock %}
