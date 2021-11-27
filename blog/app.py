@@ -1,3 +1,6 @@
+import os
+from werkzeug.utils import secure_filename
+
 from flask import Flask
 from flask import render_template
 from flask import url_for
@@ -9,10 +12,16 @@ from models import Post
 from models import Category
 
 
+UPLOAD_FOLDER = "static/media"
+UPLOADS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+
 def create_app():
 	app = Flask(__name__, static_folder = "static")
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+	app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 	db.init_app(app)
 
@@ -82,16 +91,26 @@ def categoryDetail(slug):
 	return render_template("categoryDetail.html", data = data)
 
 
+def allowedFile(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route("/create", methods = ["POST", "GET"])
 def create():
 	if request.method == "POST":
 		title = request.form["title"]
 		text = request.form["text"]
+		image = request.files["image"]
 
 		category = request.form["category"]
 		category = Category.query.filter_by(slug = category).first()
 
 		post = Post(title = title, text = text, category = category)
+
+		if image and allowedFile(image.filename):
+			filename = secure_filename(image.filename)
+			image.save(os.path.join(UPLOADS_PATH, app.config['UPLOAD_FOLDER'], filename))
+
+			post.path_img = f"./media/{filename}"
 
 		try:
 			db.session.add(post)

@@ -13,6 +13,11 @@
 			<li class="breadcrumb-item active" aria-current="page">{{ data.post.title }}</li>
 		</ol>
 	</nav>
+	{% if data.post.path_img %}
+		<div class="w-50">
+			<img src="{{ url_for('static', filename = data.post.path_img) }}" class="card-img-top" alt="Image post">
+		</div>
+	{% endif %}
 	<h1 class="mt-5">{{ data.post.title }}</h1>
 	{{ data.post.text }}
 	<div class="mt-4">
