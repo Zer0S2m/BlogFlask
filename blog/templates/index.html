@@ -7,7 +7,7 @@
 {% block content %}
 	<h1>Blog</h1>
 	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-5">
-		{% for post in data.posts %}
+		{% for post in data.posts.items %}
 		<div class="col">
 			<div class="card">
 				{% if post.path_img %}
@@ -26,4 +26,43 @@
 		</div>
 		{% endfor %}
 	</div>
+	<nav class="mt-4" aria-label="...">
+		<ul class="pagination">
+			{% if data.posts.pages > 1 %}
+				{% if data.posts.has_prev %}
+					<li class="page-item">
+						<a href="{{ url_for('index', page = data.posts.prev_num) }}" class="page-link">Previous</a>
+					</li>
+				{% else %}
+			    <li class="page-item disabled">
+			      <a class="page-link">Previous</a>
+			    </li>
+		    {% endif %}
+
+				{% for page in data.posts.iter_pages() %}
+					{% if page %}
+						{% if page != data.posts.page %}
+							<li class="page-item">
+								<a class="page-link" href="{{ url_for('index', page = page) }}">{{ page }}</a>
+							</li>
+						{% else %}
+							<li class="page-item active">
+								<span class="page-link">{{ page }}</span>
+							</li>
+						{% endif %}
+					{% endif %}
+				{% endfor %}
+
+				{% if data.posts.has_next %}
+					<li class="page-item">
+						<a href="{{ url_for('index', page = data.posts.next_num) }}" class="page-link" href="#">Next</a>
+					</li>
+				{% else %}
+			    <li class="page-item disabled">
+			      <a class="page-link">Next</a>
+			    </li>
+		    {% endif %}
+	    {% endif %}
+		</ul>
+	</nav>
 {% endblock %}

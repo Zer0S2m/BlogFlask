@@ -10,6 +10,12 @@
 			<li class="breadcrumb-item">
 				<a href="{{ url_for('index') }}">Home</a>
 			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ url_for('categories') }}">Categories</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ url_for('categoryDetail', slug = data.post.category.slug) }}">{{ data.post.category.title }}</a>
+			</li>
 			<li class="breadcrumb-item active" aria-current="page">{{ data.post.title }}</li>
 		</ol>
 	</nav>

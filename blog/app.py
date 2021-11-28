@@ -11,15 +11,17 @@ from models import db
 from models import Post
 from models import Category
 
-
-UPLOAD_FOLDER = "static/media"
-UPLOADS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)))
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+from config import UPLOAD_FOLDER
+from config import UPLOADS_PATH
+from config import ALLOWED_EXTENSIONS
+from config import FOLDER_STATIC
+from config import NAME_DB
+from config import PER_PAGE
 
 
 def create_app():
-	app = Flask(__name__, static_folder = "static")
-	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+	app = Flask(__name__, static_folder = FOLDER_STATIC)
+	app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{NAME_DB}'
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 	app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -31,17 +33,21 @@ def create_app():
 app = create_app()
 
 
-@app.route("/index")
-@app.route("/")
-def index():
-	posts = Post.query.all()
+@app.errorhandler(404)
+def notFoundError(error):
+    return render_template('404.html'), 404
+
+
+@app.route("/", methods = ["GET"], defaults = {"page": 1})
+@app.route("/<int:page>", methods = ["GET"])
+def index(page):
+	posts = Post.query.order_by(Post.pub_date.desc()).paginate(page, PER_PAGE, error_out = False)
 
 	data = {
 		"posts": posts
 	}
 
 	return render_template("index.html", data = data)
-
 
 @app.route("/about")
 def about():
