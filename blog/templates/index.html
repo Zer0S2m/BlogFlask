@@ -20,7 +20,7 @@
 					<p class="card-text mt-2">
 						<small class="text-muted">{{ post.get_PubDate() }}</small>
 					</p>
-					<a href="{{ url_for('categoryDetail', slug = post.category.slug) }}">{{ post.category.title }}</a>
+					<a href="{{ url_for('category.categoryDetail', slug = post.category.slug) }}">{{ post.category.title }}</a>
 				</div>
 			</div>
 		</div>

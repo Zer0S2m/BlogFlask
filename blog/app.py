@@ -18,6 +18,9 @@ from config import FOLDER_STATIC
 from config import NAME_DB
 from config import PER_PAGE
 
+from views import categories_blueprint
+from views import categoryDetail_blueprint
+
 
 def create_app():
 	app = Flask(__name__, static_folder = FOLDER_STATIC)
@@ -31,6 +34,8 @@ def create_app():
 
 
 app = create_app()
+app.register_blueprint(categories_blueprint)
+app.register_blueprint(categoryDetail_blueprint)
 
 
 @app.errorhandler(404)
@@ -55,24 +60,6 @@ def about():
 	return render_template("about.html")
 
 
-@app.route("/categories")
-def categories():
-	infoPosts = {}
-
-	categories = Category.query.all()
-
-	for category in range(0, len(categories)):
-		postsCount = len(Post.query.filter_by(category = categories[category]).all())
-		infoPosts[categories[category]] = postsCount
-
-	data = {
-		"categories": categories,
-		"infoPosts": infoPosts,
-	}
-
-	return render_template("categories.html", data = data)
-
-
 @app.route("/post-<int:id>")
 def postDetail(id):
 	post = Post.query.filter_by(id = id).first()
@@ -83,19 +70,6 @@ def postDetail(id):
 
 	return render_template("postDetail.html", data = data)
 
-
-@app.route("/category/<slug>")
-def categoryDetail(slug):
-	category = Category.query.filter_by(slug = slug).first()
-	posts = Post.query.filter_by(category = category).all()
-
-	data = {
-		"slug": slug,
-		"title": category.title,
-		"posts": posts
-	}
-
-	return render_template("categoryDetail.html", data = data)
 
 
 def allowedFile(filename):
