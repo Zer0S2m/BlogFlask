@@ -41,13 +41,14 @@ def notFoundError(error):
 @app.route("/", methods = ["GET"], defaults = {"page": 1})
 @app.route("/<int:page>", methods = ["GET"])
 def index(page):
-	posts = Post.query.order_by(Post.pub_date.desc()).paginate(page, PER_PAGE, error_out = False)
+	pagination = Post.query.order_by(Post.pub_date.desc()).paginate(page, PER_PAGE, error_out = False)
 
 	data = {
-		"posts": posts
+		"pagination": pagination
 	}
 
 	return render_template("index.html", data = data)
+
 
 @app.route("/about")
 def about():

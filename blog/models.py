@@ -1,5 +1,4 @@
 from datetime import datetime
-from datetime import date
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,9 +15,13 @@ class Post(db.Model):
 	title = db.Column(db.String(100), nullable = False)
 	text = db.Column(db.Text, nullable = False)
 	path_img = db.Column(db.String, nullable = True)
-	pub_date = db.Column(db.DateTime, nullable = False, default = date.today())
+	pub_date = db.Column(db.DateTime, nullable = False, default = datetime.now())
 	category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable = False)
 	category = db.relationship('Category', backref = db.backref('posts', lazy = True))
+
+
+	def get_PubDate(self):
+		return self.pub_date.strftime("%d.%m.%Y/%H:%M")
 
 
 	def __repr__(self):
