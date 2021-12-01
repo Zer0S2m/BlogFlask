@@ -5,27 +5,43 @@
 {% endblock %}
 
 {% block content %}
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		  <div class="mb-5">
+		    <ul class="list-group">
+			    {% for message in messages %}
+			      <li class="list-group-item list-group-item-danger">
+			      	{{ message }}
+			      </li>
+			    {% endfor %}
+		    </ul>
+		  </div>
+	  {% endif %}
+	{% endwith %}
 	<h1>Register</h1>
 	<div class="mt-3">
 		<div class="w-50">
-			<form method="post">
+			<form method="post" class="form-register">
 				<div class="mb-3">
 					<label for="exampleInputUserName" class="form-label">Username</label>
-					<input type="text" class="form-control" id="exampleInputUserName" aria-describedby="emailHelp" name="username">
+					<input type="text" class="form-control" id="exampleInputUserName" aria-describedby="emailHelp" name="username" required>
 				</div>
 				<div class="mb-3">
 					<label for="exampleInputEmail1" class="form-label">Email address</label>
-					<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+					<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" required>
 				</div>
 				<div class="mb-3">
 					<label for="exampleInputPassword1" class="form-label">Password</label>
-					<input type="password" class="form-control" id="exampleInputPassword1" name="password">
+					<input type="password" class="form-control form-register-password" id="exampleInputPassword1" name="password" required>
 				</div>
 				<div class="mb-3">
 					<label for="exampleInputPassword2" class="form-label">Repeat password</label>
-					<input type="password" class="form-control" id="exampleInputPassword2" name="repeat_password">
+					<input type="password" class="form-control form-register-repeat_password" id="exampleInputPassword2" name="repeat_password" required>
+					<div class="invalid-feedback form-register-invalid-feedback">
+						Password mismatch!
+					</div>
 				</div>
-				<button type="submit" class="btn btn-primary">reqister</button>
+				<button type="submit" class="btn btn-primary form-register-btn">reqister</button>
 			</form>
 		</div>
 	</div>

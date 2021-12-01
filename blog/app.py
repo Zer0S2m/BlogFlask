@@ -6,10 +6,12 @@ from flask import render_template
 from flask import url_for
 from flask import redirect
 from flask import request
+from flask import flash
 
 from flask_login import login_required
 from flask_login import current_user
 from flask_login import login_user
+from flask_login import logout_user
 
 from models import db
 from models import Post
@@ -86,6 +88,7 @@ def allowedFile(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/create", methods = ["POST", "GET"])
+@login_required
 def create():
 	if request.method == "POST":
 		title = request.form["title"]
@@ -124,7 +127,7 @@ def create():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
 	if current_user.is_authenticated:
-		return redirect('/')
+		return redirect(url_for("index"))
 
 	if request.method == 'POST':
 		email = request.form['email']
@@ -132,7 +135,7 @@ def login():
 
 		if user is not None and user.check_password(request.form['password']):
 			login_user(user)
-			return redirect('/')
+			return redirect(url_for("index"))
 
 	return render_template('control/login.html')
 
@@ -140,25 +143,32 @@ def login():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
 	if current_user.is_authenticated:
-		return redirect('/')
+		return redirect(url_for("index"))
 
 	if request.method == 'POST':
-		email = request.form['email']
-		username = request.form['username']
-		password = request.form['password']
+		email = request.form.get('email')
+		username = request.form.get('username')
+		password = request.form.get('password')
 
-		user = User(username = username)
+		if not (email and username and password):
+			flash('You did not provide data')
+			return redirect(url_for('register'))
+
+		user = User(username = username, email = email)
+
 		user.set_password(password)
-
-		if email:
-			user.email = email
-
 		db.session.add(user)
 		db.session.commit()
 
-		return redirect('/login')
+		return redirect(url_for("login"))
 
 	return render_template('control/register.html')
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':
