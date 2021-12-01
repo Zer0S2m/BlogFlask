@@ -11,7 +11,7 @@
 				<a href="{{ url_for('index') }}">Home</a>
 			</li>
 			<li class="breadcrumb-item">
-				<a href="{{ url_for('categories.categories') }}">Categories</a>
+				<a href="{{ url_for('category.category_list') }}">Categories</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">{{ data.title }}</li>
 		</ol>
@@ -27,11 +27,11 @@
 				<div class="card-body">
 					<h5 class="card-title">{{ post.title }}</h5>
 					<p class="card-text">{{ post.text }}</p>
-					<a href="{{ url_for('postDetail', id = post.id) }}" class="btn btn-primary">Read</a>
+					<a href="{{ url_for('post_detail', id = post.id) }}" class="btn btn-primary">Read</a>
 					<p class="card-text mt-2">
 						<small class="text-muted">{{ post.pub_date }}</small>
 					</p>
-					<a href="{{ url_for('category.categoryDetail', slug = post.category.slug) }}">{{ post.category.title }}</a>
+					<a href="{{ url_for('category.category_detail', slug = post.category.slug) }}">{{ post.category.title }}</a>
 				</div>
 			</div>
 		</div>

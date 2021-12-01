@@ -5,30 +5,29 @@ from models import Post
 from models import Category
 
 
-categories_blueprint = Blueprint('categories', __name__, template_folder = 'templates')
+category = Blueprint('category', __name__, template_folder = 'templates')
 
-@categories_blueprint.route("/categories")
-def categories():
-	infoPosts = {}
+
+@category.route("/categories")
+def category_list():
+	info_posts = {}
 
 	categories = Category.query.all()
 
 	for category in range(0, len(categories)):
 		postsCount = len(Post.query.filter_by(category = categories[category]).all())
-		infoPosts[categories[category]] = postsCount
+		info_posts[categories[category]] = postsCount
 
 	data = {
 		"categories": categories,
-		"infoPosts": infoPosts,
+		"info_posts": info_posts,
 	}
 
 	return render_template("categories.html", data = data)
 
 
-categoryDetail_blueprint = Blueprint('category', __name__, template_folder = 'templates')
-
-@categoryDetail_blueprint.route("/category/<slug>")
-def categoryDetail(slug):
+@category.route("/categories/<slug>")
+def category_detail(slug):
 	category = Category.query.filter_by(slug = slug).first()
 	posts = Post.query.filter_by(category = category).all()
 

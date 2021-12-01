@@ -8,3 +8,4 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 FOLDER_STATIC = "static"
 NAME_DB = "blog.db"
 PER_PAGE = 3
+SECRET_KEY = "qwerty"

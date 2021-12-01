@@ -7,9 +7,15 @@ from flask import url_for
 from flask import redirect
 from flask import request
 
+from flask_login import login_required
+from flask_login import current_user
+from flask_login import login_user
+
 from models import db
 from models import Post
 from models import Category
+from models import User
+from models import login_manager
 
 from config import UPLOAD_FOLDER
 from config import UPLOADS_PATH
@@ -17,13 +23,15 @@ from config import ALLOWED_EXTENSIONS
 from config import FOLDER_STATIC
 from config import NAME_DB
 from config import PER_PAGE
+from config import SECRET_KEY
 
-from views import categories_blueprint
-from views import categoryDetail_blueprint
+from views import category
 
 
 def create_app():
 	app = Flask(__name__, static_folder = FOLDER_STATIC)
+	app.secret_key = SECRET_KEY
+
 	app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{NAME_DB}'
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 	app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -34,13 +42,15 @@ def create_app():
 
 
 app = create_app()
-app.register_blueprint(categories_blueprint)
-app.register_blueprint(categoryDetail_blueprint)
+app.register_blueprint(category)
+
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 
 @app.errorhandler(404)
 def notFoundError(error):
-    return render_template('404.html'), 404
+	return render_template('404.html'), 404
 
 
 @app.route("/", methods = ["GET"], defaults = {"page": 1})
@@ -61,7 +71,7 @@ def about():
 
 
 @app.route("/post-<int:id>")
-def postDetail(id):
+def post_detail(id):
 	post = Post.query.filter_by(id = id).first()
 
 	data = {
@@ -73,7 +83,7 @@ def postDetail(id):
 
 
 def allowedFile(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/create", methods = ["POST", "GET"])
 def create():
@@ -109,6 +119,46 @@ def create():
 		}
 
 		return render_template("create.html", data = data)
+
+
+@app.route('/login', methods = ['POST', 'GET'])
+def login():
+	if current_user.is_authenticated:
+		return redirect('/')
+
+	if request.method == 'POST':
+		email = request.form['email']
+		user = User.query.filter_by(email = email).first()
+
+		if user is not None and user.check_password(request.form['password']):
+			login_user(user)
+			return redirect('/')
+
+	return render_template('control/login.html')
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+	if current_user.is_authenticated:
+		return redirect('/')
+
+	if request.method == 'POST':
+		email = request.form['email']
+		username = request.form['username']
+		password = request.form['password']
+
+		user = User(username = username)
+		user.set_password(password)
+
+		if email:
+			user.email = email
+
+		db.session.add(user)
+		db.session.commit()
+
+		return redirect('/login')
+
+	return render_template('control/register.html')
 
 
 if __name__ == '__main__':

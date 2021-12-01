@@ -21,10 +21,16 @@
 						<a href="{{ url_for('about') }}" class="nav-link">About</a>
 					</li>
 					<li class="nav-item">
-						<a href="{{ url_for('categories.categories') }}" class="nav-link">Categories</a>
+						<a href="{{ url_for('category.category_list') }}" class="nav-link">Categories</a>
 					</li>
 					<li class="nav-item">
 						<a href="{{ url_for('create') }}" class="btn btn-outline-primary">Add post</a>
+					</li>
+					<li class="nav-item ms-3">
+						<a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+					</li>
+					<li class="nav-item ms-2">
+						<a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
 					</li>
 				</ul>
 			</header>
