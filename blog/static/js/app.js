@@ -29,3 +29,17 @@ if ( formRegister ) {
 		}
 	}, true);
 }
+
+
+const formCabinet = document.querySelector(".form-cabinet");
+
+if ( formCabinet ) {
+	const inputs = formCabinet.querySelectorAll(".form-cabinet-input");
+	const btnSave = formCabinet.querySelector(".form-cabinet-btn");
+
+	inputs.forEach((input) => {
+		input.addEventListener("input", () => {
+			btnSave.classList.remove("disabled");
+		}, true);
+	});
+}

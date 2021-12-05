@@ -99,11 +99,11 @@ def get_usets_emails():
 @login_required
 def create():
 	if request.method == "POST":
-		title = request.form["title"]
-		text = request.form["text"]
-		image = request.files["image"]
+		title = request.form.get("title")
+		text = request.form.get("text")
+		image = request.files.get("image")
 
-		category = request.form["category"]
+		category = request.form.get("category")
 		category = Category.query.filter_by(slug = category).first()
 
 		post = Post(title = title, text = text, category = category)

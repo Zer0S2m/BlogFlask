@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>Blog - cabinet</title>
+{% endblock %}
+
+{% block content %}
+	<h1>Cabinet</h1>
+	<div class="mt-4">
+		<div class="w-50">
+			<form method="post" class="form-cabinet">
+				<div class="mb-3">
+					<label for="exampleInputText1" class="form-label">Name</label>
+					<input type="text" name="username" class="form-control form-cabinet-input" id="exampleInputText1" value="{{ current_user.username }}" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3">
+					<label for="exampleInputEmail1" class="form-label">Email address</label>
+					<input type="email" name="email" class="form-control form-cabinet-input" id="exampleInputEmail1" value="{{ current_user.email }}" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3 form-check">
+					{% if current_user.email_newsletter %}
+						<input type="checkbox" name="email_newsletter" class="form-check-input form-cabinet-input" id="exampleCheck1" checked>
+					{% else %}
+						<input type="checkbox" name="email_newsletter" class="form-check-input form-cabinet-input" id="exampleCheck1">
+					{% endif %}
+					<label class="form-check-label" for="exampleCheck1">Newsletter by email</label>
+				</div>
+				<button type="submit" class="btn btn-primary disabled form-cabinet-btn">save</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}
