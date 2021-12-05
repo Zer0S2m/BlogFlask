@@ -10,8 +10,6 @@ from flask import flash
 
 from flask_login import login_required
 from flask_login import current_user
-from flask_login import login_user
-from flask_login import logout_user
 
 from models import db
 from models import Post
@@ -28,6 +26,9 @@ from config import PER_PAGE
 from config import SECRET_KEY
 
 from views import category
+from views import management
+
+from mailing import send_messages
 
 
 def create_app():
@@ -45,9 +46,10 @@ def create_app():
 
 app = create_app()
 app.register_blueprint(category)
+app.register_blueprint(management)
 
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'management.login'
 
 
 @app.errorhandler(404)
@@ -84,8 +86,14 @@ def post_detail(id):
 
 
 
-def allowedFile(filename):
+def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_usets_emails():
+	users = User.query.filter_by(email_newsletter = True).all()
+	emails_for_newsletter = [user.email for user in users]
+
+	return emails_for_newsletter
 
 @app.route("/create", methods = ["POST", "GET"])
 @login_required
@@ -100,7 +108,7 @@ def create():
 
 		post = Post(title = title, text = text, category = category)
 
-		if image and allowedFile(image.filename):
+		if image and allowed_file(image.filename):
 			filename = secure_filename(image.filename)
 			image.save(os.path.join(UPLOADS_PATH, app.config['UPLOAD_FOLDER'], filename))
 
@@ -110,7 +118,12 @@ def create():
 			db.session.add(post)
 			db.session.commit()
 
-			return redirect("/")
+			emails = get_usets_emails()
+
+			if emails:
+				send_messages(emails = emails)
+
+			return redirect(url_for("index"))
 		except:
 			return "Error"
 
@@ -122,53 +135,6 @@ def create():
 		}
 
 		return render_template("create.html", data = data)
-
-
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-	if current_user.is_authenticated:
-		return redirect(url_for("index"))
-
-	if request.method == 'POST':
-		email = request.form['email']
-		user = User.query.filter_by(email = email).first()
-
-		if user is not None and user.check_password(request.form['password']):
-			login_user(user)
-			return redirect(url_for("index"))
-
-	return render_template('control/login.html')
-
-
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-	if current_user.is_authenticated:
-		return redirect(url_for("index"))
-
-	if request.method == 'POST':
-		email = request.form.get('email')
-		username = request.form.get('username')
-		password = request.form.get('password')
-
-		if not (email and username and password):
-			flash('You did not provide data')
-			return redirect(url_for('register'))
-
-		user = User(username = username, email = email)
-
-		user.set_password(password)
-		db.session.add(user)
-		db.session.commit()
-
-		return redirect(url_for("login"))
-
-	return render_template('control/register.html')
-
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':

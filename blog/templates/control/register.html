@@ -6,17 +6,17 @@
 
 {% block content %}
 	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		  <div class="mb-5">
-		    <ul class="list-group">
-			    {% for message in messages %}
-			      <li class="list-group-item list-group-item-danger">
-			      	{{ message }}
-			      </li>
-			    {% endfor %}
-		    </ul>
-		  </div>
-	  {% endif %}
+		{% if messages %}
+		<div class="mb-5">
+			<ul class="list-group">
+				{% for message in messages %}
+				<li class="list-group-item list-group-item-danger">
+					{{ message }}
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
 	{% endwith %}
 	<h1>Register</h1>
 	<div class="mt-3">
@@ -40,6 +40,10 @@
 					<div class="invalid-feedback form-register-invalid-feedback">
 						Password mismatch!
 					</div>
+				</div>
+				<div class="mb-3 form-check">
+					<input type="checkbox" class="form-check-input" id="exampleCheck1" name="email_newsletter">
+					<label class="form-check-label" for="exampleCheck1">Newsletter by email</label>
 				</div>
 				<button type="submit" class="btn btn-primary form-register-btn">reqister</button>
 			</form>

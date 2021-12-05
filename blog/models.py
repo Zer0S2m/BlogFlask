@@ -58,6 +58,7 @@ class User(UserMixin, db.Model):
 	username = db.Column(db.String(128), nullable = False)
 	email = db.Column(db.String(128), unique = True)
 	password = db.Column(db.String)
+	email_newsletter = db.Column(db.Boolean, default = False, nullable = False)
 
 
 	def set_password(self, password):

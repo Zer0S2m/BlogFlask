@@ -31,14 +31,14 @@
 							<a href="">{{ current_user.username }}</a>
 						</li>
 						<li class="mav-item d-flex align-items-center ms-2">
-							<a href="{{ url_for('logout') }}">Logout</a>
+							<a href="{{ url_for('management.logout') }}">Logout</a>
 						</li>
 					{% else %}
 						<li class="nav-item ms-3">
-							<a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+							<a href="{{ url_for('management.login') }}" class="btn btn-primary">Login</a>
 						</li>
 						<li class="nav-item ms-2">
-							<a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
+							<a href="{{ url_for('management.register') }}" class="btn btn-primary">Register</a>
 						</li>
 					{% endif %}
 				</ul>
