@@ -98,6 +98,11 @@ def get_usets_emails():
 @app.route("/create", methods = ["POST", "GET"])
 @login_required
 def create():
+	data = {
+		"categories": Category.query.all(),
+		"limit_title": Post.title.info["limit"],
+	}
+
 	if request.method == "POST":
 		title = request.form.get("title")
 		text = request.form.get("text")
@@ -105,6 +110,10 @@ def create():
 
 		category = request.form.get("category")
 		category = Category.query.filter_by(slug = category).first()
+
+		if not (title and text and category):
+			flash("Not all fields are filled")
+			return render_template("create.html", data = data)
 
 		post = Post(title = title, text = text, category = category)
 
@@ -127,14 +136,7 @@ def create():
 		except:
 			return "Error"
 
-	else:
-		categories = Category.query.all()
-
-		data = {
-			"categories": categories,
-		}
-
-		return render_template("create.html", data = data)
+	return render_template("create.html", data = data)
 
 
 if __name__ == '__main__':

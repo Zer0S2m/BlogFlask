@@ -25,6 +25,9 @@
 					</li>
 					{% if current_user.is_authenticated %}
 						<li class="nav-item">
+							<a href="{{ url_for('category.category_create') }}" class="btn btn-outline-primary">Add category</a>
+						</li>
+						<li class="nav-item ms-3">
 							<a href="{{ url_for('create') }}" class="btn btn-outline-primary">Add post</a>
 						</li>
 						<li class="mav-item d-flex align-items-center ms-3">

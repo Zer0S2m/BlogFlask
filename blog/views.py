@@ -1,3 +1,5 @@
+import re
+
 from flask import Blueprint
 from flask import render_template
 from flask import redirect
@@ -16,7 +18,7 @@ from models import User
 from models import db
 
 
-category = Blueprint('category', __name__, template_folder = 'templates')
+category = Blueprint('category', __name__, template_folder = 'templates/category')
 
 
 @category.route("/categories")
@@ -48,7 +50,62 @@ def category_detail(slug):
 		"posts": posts
 	}
 
-	return render_template("categoryDetail.html", data = data)
+	return render_template("category_detail.html", data = data)
+
+
+def check_slug_category_add(slug):
+	if re.search(r"[!*'();[],:@&=+$/?#|]", slug) or len(slug) > 50:
+		return False
+
+def set_slug_category_add(title, slug):
+	if not slug:
+		slug = title
+
+	if check_slug_category_add(slug) == False:
+		return False
+
+	slug = slug.strip()
+	slug = slug.lower()
+	slug = re.sub(r"\s{1,50}", "-", slug)
+
+	return slug
+
+@category.route("/categories-add", methods = ["GET", "POST"])
+@login_required
+def category_create():
+	data = {
+		"limit_title": Category.title.info["limit"],
+		"limit_slug": Category.slug.info["limit"],
+	}
+
+	if request.method == "POST":
+		title_category = request.form.get("title_category")
+		slug_category = request.form.get("slug_category")
+
+		if not title_category:
+			flash("You did not enter a category name")
+			return render_template("category_add.html", data = data)
+
+		if len(title_category) > Category.title.info["limit"]:
+			flash("Exceeds character limit")
+			return render_template("category_add.html", data = data)
+
+		slug_category = set_slug_category_add(title = title_category, slug = slug_category)
+
+		if not slug_category:
+			flash("""
+				Must not contain characters: ! , *, ', (, ) ; , :, @, &, =, +, $, / ? , #, [ и ] .
+				Or the length exceeds the limit
+			""")
+			return render_template("category_add.html", data = data)
+
+		new_category = Category(title = title_category, slug = slug_category)
+		db.session.add(new_category)
+		db.session.commit()
+
+		return redirect(url_for("index"))
+
+	return render_template("category_add.html", data = data)
 
 
 management = Blueprint('management', __name__, template_folder = 'templates/management')
@@ -107,7 +164,13 @@ def register():
 
 		return redirect(url_for("management.login"))
 
-	return render_template('register.html')
+	data = {
+		"limit_name": User.username.info["limit"],
+		"limit_email": User.email.info["limit"],
+		"limit_password": User.password.info["limit"],
+	}
+
+	return render_template('register.html', data = data)
 
 
 @management.route("/cabinet", methods = ["GET", "POST"])

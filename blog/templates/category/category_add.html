@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>Blog - add category</title>
+{% endblock %}
+
+{% block content %}
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<div class="mb-5">
+			<ul class="list-group">
+				{% for message in messages %}
+				<li class="list-group-item list-group-item-danger">
+					{{ message }}
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+	{% endwith %}
+	<h1>Add category</h1>
+	<div class="mt-4 w-50">
+		<form method="post">
+			<div class="mb-3">
+				<label for="exampleInputText1" class="form-label">Title category</label>
+				<input type="text" name="title_category" class="form-control" id="exampleInputText1" aria-describedby="emailHelp" required>
+				<div class="form-text">Character limit: {{ data.limit_title }}</div>
+			</div>
+			<div class="mb-3">
+				<label for="exampleInputText2" class="form-label">Slug category</label>
+				<input type="text" name="slug_category" class="form-control" id="exampleInputText2">
+				<div class="form-text">
+					Character limit: {{ data.limit_slug }}<br>
+					Must not contain characters: ! , *, ', (, ) ; , :, @, &, =, +, $, / ? , #, [ и ]<br>
+					In the absence "slug" is built from the category name
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary">add</button>
+		</form>
+	</div>
+{% endblock %}

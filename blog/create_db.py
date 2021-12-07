@@ -16,12 +16,7 @@ post_2 = Post(title = "Title post 2", text = "Text post 2", category = category_
 post_3 = Post(title = "Title post 3", text = "Text post 3", category = category_1, path_img = "./media/post-img-3.jpg")
 post_4 = Post(title = "Title post 4", text = "Text post 4", category = category_1, path_img = "./media/post-img-4.jpg")
 
-db.session.add(category_1)
-db.session.add(category_2)
-
-db.session.add(post_1)
-db.session.add(post_2)
-db.session.add(post_3)
-db.session.add(post_4)
+db.session.add_all([category_1, category_2])
+db.session.add_all([post_1, post_2, post_3, post_4])
 
 db.session.commit()

@@ -13,12 +13,26 @@
 			<li class="breadcrumb-item active" aria-current="page">Add post</li>
 		</ol>
 	</nav>
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<div class="mb-5">
+			<ul class="list-group">
+				{% for message in messages %}
+				<li class="list-group-item list-group-item-danger">
+					{{ message }}
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+	{% endwith %}
 	<h1>Add post</h1>
 	<div class="w-50">
 		<form class="mt-4" method="post" enctype = multipart/form-data>
 			<div class="mb-3">
 				<label for="exampleInputEmail1" class="form-label">Title</label>
 				<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="title" required>
+				<div class="form-text">Character limit: {{ data.limit_title }}</div>
 			</div>
 			<div class="mb-3">
 				<label for="exampleFormControlTextarea1" class="form-label">Decription</label>

@@ -19,7 +19,7 @@ class Post(db.Model):
 	__tablename__ = 'post'
 
 	id = db.Column(db.Integer, primary_key = True)
-	title = db.Column(db.String(100), nullable = False)
+	title = db.Column(db.String(100), nullable = False, info = {"limit": 100})
 	text = db.Column(db.Text, nullable = False)
 	path_img = db.Column(db.String, nullable = True)
 	pub_date = db.Column(db.DateTime, nullable = False, default = datetime.now())
@@ -41,8 +41,8 @@ class Category(db.Model):
 	__tablename__ = 'category'
 
 	id = db.Column(db.Integer, primary_key = True)
-	title = db.Column(db.String(100), nullable = False)
-	slug = db.Column(db.String(50), nullable = False)
+	title = db.Column(db.String(100), nullable = False, info = {"limit": 100})
+	slug = db.Column(db.String(100), nullable = False, info = {"limit": 100})
 
 
 	def __repr__(self):
@@ -55,9 +55,9 @@ class User(UserMixin, db.Model):
 	__tablename__ = 'user'
 
 	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(128), nullable = False)
-	email = db.Column(db.String(128), unique = True)
-	password = db.Column(db.String)
+	username = db.Column(db.String(128), nullable = False, info = {"limit": 128})
+	email = db.Column(db.String(255), unique = True, info = {"limit": 255})
+	password = db.Column(db.String(255), nullable = False, info = {"limit": 255})
 	email_newsletter = db.Column(db.Boolean, default = False, nullable = False)
 
 
