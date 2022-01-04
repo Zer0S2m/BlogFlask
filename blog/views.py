@@ -1,21 +1,19 @@
 import re
 
-from flask import Blueprint
-from flask import render_template
-from flask import redirect
-from flask import url_for
-from flask import request
-from flask import flash
+from flask import (
+	Blueprint, render_template, redirect,
+	request, url_for, flash
+)
 
-from flask_login import current_user
-from flask_login import login_user
-from flask_login import logout_user
-from flask_login import login_required
+from flask_login import (
+	current_user, login_user, logout_user,
+	login_required
+)
 
-from models import Post
-from models import Category
-from models import User
-from models import db
+from models import (
+	Post, Category, User,
+	db
+)
 
 
 category = Blueprint('category', __name__, template_folder = 'templates/category')
@@ -84,11 +82,15 @@ def category_create():
 
 		if not title_category:
 			flash("You did not enter a category name")
-			return render_template("category_add.html", data = data)
+			return redirect(url_for("category.category_create", data = data))
+
+		if Category.query.filter_by(title = title_category).first():
+			flash("This category already exists")
+			return redirect(url_for("category.category_create", data = data))
 
 		if len(title_category) > Category.title.info["limit"]:
 			flash("Exceeds character limit")
-			return render_template("category_add.html", data = data)
+			return redirect(url_for("category.category_create", data = data))
 
 		slug_category = set_slug_category_add(title = title_category, slug = slug_category)
 
@@ -97,7 +99,11 @@ def category_create():
 				Must not contain characters: ! , *, ', (, ) ; , :, @, &, =, +, $, / ? , #, [ и ] .
 				Or the length exceeds the limit
 			""")
-			return render_template("category_add.html", data = data)
+			return redirect(url_for("category.category_create", data = data))
+
+		if Category.query.filter_by(slug = slug_category).first():
+			flash('Such a category with "slug" already exists')
+			return redirect(url_for("category.category_create", data = data))
 
 		new_category = Category(title = title_category, slug = slug_category)
 		db.session.add(new_category)

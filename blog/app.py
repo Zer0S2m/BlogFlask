@@ -1,29 +1,24 @@
 import os
 from werkzeug.utils import secure_filename
 
-from flask import Flask
-from flask import render_template
-from flask import url_for
-from flask import redirect
-from flask import request
-from flask import flash
+from flask import (
+	Flask, render_template, url_for,
+	redirect, request, flash
+)
 
 from flask_login import login_required
 from flask_login import current_user
 
-from models import db
-from models import Post
-from models import Category
-from models import User
-from models import login_manager
+from models import (
+	db, Post, Category,
+	User, login_manager
+)
 
-from config import UPLOAD_FOLDER
-from config import UPLOADS_PATH
-from config import ALLOWED_EXTENSIONS
-from config import FOLDER_STATIC
-from config import NAME_DB
-from config import PER_PAGE
-from config import SECRET_KEY
+from config import (
+	UPLOAD_FOLDER, UPLOADS_PATH, ALLOWED_EXTENSIONS,
+	FOLDER_STATIC, NAME_DB, PER_PAGE,
+	SECRET_KEY
+)
 
 from views import category
 from views import management
@@ -113,7 +108,7 @@ def create():
 
 		if not (title and text and category):
 			flash("Not all fields are filled")
-			return render_template("create.html", data = data)
+			return redirect(url_for("create", data = data))
 
 		post = Post(title = title, text = text, category = category)
 

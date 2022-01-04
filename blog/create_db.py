@@ -1,9 +1,19 @@
+import os
+
 from models import db
 from models import Post
 from models import Category
 
 from app import create_app
 
+from config import NAME_DB
+
+
+path = os.path.join(os.path.abspath(os.path.dirname(__file__)), NAME_DB)
+try:
+	os.remove(path)
+except FileNotFoundError:
+	pass
 
 app = create_app()
 app.app_context().push()
